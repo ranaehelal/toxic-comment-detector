@@ -1,0 +1,75 @@
+odel: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #
+=================================================================
+ embedding (Embedding)       (None, 150, 128)          2560000
+
+ spatial_dropout1d (SpatialD  (None, 150, 128)         0
+ ropout1D)
+
+ bidirectional (Bidirectiona  (None, 150, 128)         98816
+ l)
+
+ global_max_pooling1d (Globa  (None, 128)              0
+ lMaxPooling1D)
+
+ dense (Dense)               (None, 64)                8256
+
+ dropout (Dropout)           (None, 64)                0
+
+ dense_1 (Dense)             (None, 6)                 390
+
+=================================================================
+Total params: 2,667,462
+Trainable params: 2,667,462
+Non-trainable params: 0
+_________________________________________________________________
+None
+
+
+1122/1122 [==============================] - 353s 312ms/step - loss: 0.0847 - accuracy: 0.8856 - val_loss: 0.0500 - val_accuracy: 0.9940
+Epoch 2/4
+1122/1122 [==============================] - ETA: 0s - loss: 0.0501 - accuracy: 0.9878
+1122/1122 [==============================] - 407s 363ms/step - loss: 0.0501 - accuracy: 0.9878 - val_loss: 0.0470 - val_accuracy: 0.9940
+Epoch 3/4
+1122/1122 [==============================] - ETA: 0s - loss: 0.0454 - accuracy: 0.9838
+1122/1122 [==============================] - 472s 421ms/step - loss: 0.0454 - accuracy: 0.9838 - val_loss: 0.0474 - val_accuracy: 0.9940
+Epoch 4/4
+1122/1122 [==============================] - ETA: 0s - loss: 0.0418 - accuracy: 0.9735Restoring model weights from the end of the best epoch: 2.
+
+1122/1122 [==============================] - 498s 444ms/step - loss: 0.0418 - accuracy: 0.9735 - val_loss: 0.0494 - val_accuracy: 0.9940
+Epoch 4: early stopping
+Model saved to models/toxic_lstm_model.h5
+Training completed!
+Final training accuracy: 0.9735
+Final validation accuracy: 0.99
+
+
+Comment: I love this product! Absolutely fantastic experience.
+Predicted as CLEAN
+1/1 [==============================] - 0s 39ms/step
+
+Comment: You're a genius, keep up the great work!
+Predicted as CLEAN
+1/1 [==============================] - 0s 32ms/step
+
+Comment: This is the worst service ever, totally disappointed.
+Predicted as CLEAN
+1/1 [==============================] - 0s 34ms/step
+
+Comment: You suck and nobody likes you.
+Predicted as TOXIC:
+  - toxic: 0.990
+  - obscene: 0.889
+  - insult: 0.707
+1/1 [==============================] - 0s 35ms/step
+
+Comment: Go to hell, you idiot!
+Predicted as TOXIC:
+  - toxic: 0.994
+  - obscene: 0.915
+  - insult: 0.745
+1/1 [==============================] - 0s 36ms/step
+
+Comment: Thank you so much for your support!
+Predicted as CLEAN

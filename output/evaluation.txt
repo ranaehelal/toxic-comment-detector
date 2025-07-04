@@ -1,0 +1,104 @@
+
+==================================================
+EVALUATION RESULTS
+==================================================
+Threshold: 0.5
+Test samples: 63978
+
+TOXIC:
+  AUC: 0.9623
+  Accuracy: 0.9266
+  Positive examples: 6090
+
+SEVERE_TOXIC:
+  AUC: 0.9850
+  Accuracy: 0.9934
+  Positive examples: 367
+
+OBSCENE:
+  AUC: 0.9758
+  Accuracy: 0.9633
+  Positive examples: 3691
+
+THREAT:
+  AUC: 0.9566
+  Accuracy: 0.9967
+  Positive examples: 211
+
+INSULT:
+  AUC: 0.9671
+  Accuracy: 0.9591
+  Positive examples: 3427
+
+IDENTITY_HATE:
+  AUC: 0.9459
+  Accuracy: 0.9889
+  Positive examples: 712
+
+==================================================
+DETAILED CLASSIFICATION REPORT
+==================================================
+               precision    recall  f1-score   support
+
+        toxic       0.58      0.82      0.68      6090
+ severe_toxic       0.36      0.18      0.24       367
+      obscene       0.66      0.76      0.70      3691
+       threat       0.00      0.00      0.00       211
+       insult       0.62      0.60      0.61      3427
+identity_hate       0.00      0.00      0.00       712
+
+    micro avg       0.61      0.68      0.64     14498
+    macro avg       0.37      0.39      0.37     14498
+ weighted avg       0.57      0.68      0.61     14498
+  samples avg       0.07      0.06      0.06     14498
+
+
+==================================================
+TESTING SAMPLE COMMENTS
+==================================================
+1/1 [==============================] - 0s 39ms/step
+
+Comment: 'I love this product! Great quality and service.'
+Toxic: NO
+1/1 [==============================] - 0s 30ms/step
+
+Comment: 'This is absolutely terrible, worst experience ever.'
+Toxic: YES
+Labels detected:
+  - toxic: 0.544
+1/1 [==============================] - 0s 32ms/step
+
+Comment: 'You're an idiot and should go to hell!'
+Toxic: YES
+Labels detected:
+  - toxic: 0.988
+  - obscene: 0.875
+  - insult: 0.697
+1/1 [==============================] - 0s 42ms/step
+
+Comment: 'Thank you for your help, much appreciated.'
+Toxic: NO
+1/1 [==============================] - 0s 35ms/step
+
+Comment: 'I hate you so much, you stupid moron!'
+Toxic: YES
+Labels detected:
+  - toxic: 0.993
+  - obscene: 0.908
+  - insult: 0.743
+1/1 [==============================] - 0s 33ms/step
+
+Comment: 'This looks amazing, can't wait to try it!'
+Toxic: NO
+1/1 [==============================] - 0s 32ms/step
+
+Comment: 'Kill yourself, nobody wants you here.'
+Toxic: YES
+Labels detected:
+  - toxic: 0.745
+1/1 [==============================] - 0s 33ms/step
+
+Comment: 'Great job on this project, well done!'
+Toxic: NO
+
+Evaluation completed!

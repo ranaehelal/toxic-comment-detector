@@ -1,0 +1,13 @@
+# Data files (large)
+data/*.csv
+models/
+*.h5
+*.keras
+*.pkl
+
+# PyCharm
+.idea/
+
+# Others
+__pycache__/
+*.pyc

@@ -1,0 +1,12 @@
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+tensorflow
+kagglehub
+wordcloud
+spacy
+emoji
+nltk
+tqdm
