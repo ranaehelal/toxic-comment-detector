@@ -1,0 +1,24 @@
+body {
+  background-color: rgba(238, 206, 206, 0.77);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.title {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease-in-out;
+}
+
+.card:hover {
+  transform: scale(1.01);
+}
+
+textarea.form-control {
+  border-radius: 10px;
+  resize: none;
+}
