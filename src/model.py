@@ -102,6 +102,7 @@ def predict_toxicity(model, tokenizer, text, threshold=0.5):
 
 class ToxicCommentClassifier:
     def __init__(self, model=None, tokenizer=None):
+        self.labels = LABEL_COLS
         if model is None:
             self.model = load_trained_model()
         else:
@@ -112,12 +113,17 @@ class ToxicCommentClassifier:
         else:
             self.tokenizer = tokenizer
 
+    def load_model_and_tokenizer(self):
+        self.model = load_trained_model()
+        self.tokenizer = load_tokenizer()
+
     def predict(self, comment, threshold=0.5):
         from .preprocessing import preprocessing_text, texts_to_sequences
 
         clean = preprocessing_text(comment)
         sequence = texts_to_sequences([clean], self.tokenizer)
-        prediction = self.model.predict(sequence)[0]
+        padded = pad_sequences(sequence, maxlen=MAX_LEN, padding='post', truncating='post')
+        prediction = self.model.predict(padded)[0]
 
         is_toxic = np.any(prediction >= threshold)
 
@@ -126,6 +132,7 @@ class ToxicCommentClassifier:
 
         return {
             "is_toxic": is_toxic,
-            "prediction": prediction,
+            "predictions": {label: float(prob) for label, prob in zip(LABEL_COLS, prediction)},
             "positive_labels": positive_labels
         }
+

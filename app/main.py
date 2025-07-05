@@ -11,6 +11,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Dict, List, Optional
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
 
 from src.model import ToxicCommentClassifier
 
@@ -21,48 +22,43 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Allow frontend (React) to access backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # غيريها لاحقاً للدومين الفعلي لو حبيتي
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Initialize classifier
 classifier = ToxicCommentClassifier()
-
 
 # Request/Response models
 class CommentRequest(BaseModel):
     text: str
     threshold: Optional[float] = 0.5
 
+class LabelPrediction(BaseModel):
+    label: str
+    probability: float
 
 class CommentResponse(BaseModel):
     text: str
     is_toxic: bool
     predictions: Dict[str, float]
-    positive_labels: List[Dict[str, float]]
-
+    positive_labels: List[LabelPrediction]
 
 class BatchCommentRequest(BaseModel):
     texts: List[str]
     threshold: Optional[float] = 0.5
 
-
 class BatchCommentResponse(BaseModel):
     results: List[CommentResponse]
 
 
-# Startup event
-@app.on_event("startup")
-async def startup_event():
-    """Load models and tokenizer on startup."""
-    try:
-        classifier.load_model_and_tokenizer()
-        print("Model and tokenizer loaded successfully!")
-    except Exception as e:
-        print(f"Error loading models: {e}")
-        raise
-
-
-# Root endpoint
 @app.get("/")
 async def root():
-    """Root endpoint with API information."""
     return {
         "message": "Toxic Comment Classifier API",
         "version": "1.0.0",
@@ -74,31 +70,18 @@ async def root():
         }
     }
 
-
-# Health check endpoint
 @app.get("/health")
 async def health_check():
-    """Health check endpoint."""
     return {"status": "healthy", "model_loaded": classifier.model is not None}
 
 
-# Single prediction endpoint
 @app.post("/predict", response_model=CommentResponse)
 async def predict_comment(request: CommentRequest):
-    """
-    Predict toxicity for a single comment.
-
-    Args:
-        request: CommentRequest with text and optional threshold
-
-    Returns:
-        CommentResponse with prediction results
-    """
     try:
-        # Get prediction
         result = classifier.predict(request.text, request.threshold)
 
-        # Format positive labels
+        predictions_dict = result["predictions"]
+
         positive_labels = [
             {"label": label, "probability": prob}
             for label, prob in result['positive_labels']
@@ -107,7 +90,7 @@ async def predict_comment(request: CommentRequest):
         return CommentResponse(
             text=request.text,
             is_toxic=result['is_toxic'],
-            predictions=result,
+            predictions=predictions_dict,
             positive_labels=positive_labels
         )
 
@@ -115,26 +98,16 @@ async def predict_comment(request: CommentRequest):
         raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
 
 
-# Batch prediction endpoint
 @app.post("/predict_batch", response_model=BatchCommentResponse)
 async def predict_comments_batch(request: BatchCommentRequest):
-    """
-    Predict toxicity for multiple comments.
-
-    Args:
-        request: BatchCommentRequest with list of texts and optional threshold
-
-    Returns:
-        BatchCommentResponse with list of prediction results
-    """
     try:
         results = []
 
         for text in request.texts:
-            # Get prediction
             result = classifier.predict(text, request.threshold)
 
-            # Format positive labels
+            predictions_dict = result["predictions"]
+
             positive_labels = [
                 {"label": label, "probability": prob}
                 for label, prob in result['positive_labels']
@@ -143,7 +116,7 @@ async def predict_comments_batch(request: BatchCommentRequest):
             results.append(CommentResponse(
                 text=text,
                 is_toxic=result['is_toxic'],
-                predictions=result,
+                predictions=predictions_dict,
                 positive_labels=positive_labels
             ))
 
@@ -153,27 +126,23 @@ async def predict_comments_batch(request: BatchCommentRequest):
         raise HTTPException(status_code=500, detail=f"Batch prediction error: {str(e)}")
 
 
-# Model info endpoint
 @app.get("/model_info")
 async def get_model_info():
-    """Get information about the loaded models."""
     if classifier.model is None:
         raise HTTPException(status_code=503, detail="Model not loaded")
 
     return {
         "model_type": "LSTM",
-        "labels": ["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"],
+        "labels": classifier.labels,
         "vocab_size": 20000,
         "max_sequence_length": 150,
-        "model_path": classifier.model_path,
-        "tokenizer_path": classifier.tokenizer_path
+        "model_path": getattr(classifier, "model_path", "N/A"),
+        "tokenizer_path": getattr(classifier, "tokenizer_path", "N/A")
     }
 
 
-# Statistics endpoint
 @app.get("/stats")
 async def get_prediction_stats():
-    """Get basic statistics about predictions (placeholder for future implementation)."""
     return {
         "message": "Statistics endpoint - implement based on your needs",
         "suggestions": [
