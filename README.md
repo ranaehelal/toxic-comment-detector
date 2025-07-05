@@ -21,6 +21,11 @@ toxic-comment-classifier/
 ├── models/                     # Saved models
 └── requirements.txt
 ```
+## 🖼️ UI Screenshot
+
+Here’s a preview of the Toxic Comment Classifier web interface:
+
+![Toxic Comment Classifier UI](ui-screenshot.png)
 
 ## 🛠️ Installation
 
